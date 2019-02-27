@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_weight="3"
+        android:gravity="left"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/titleView"
+            android:layout_width="match_parent"
+            android:layout_height="129dp"
+            android:gravity="center"
+            android:text="区块链交易系统"
+            android:textSize="40dp" />
+
+
+        <TextView
+            android:id="@+id/addrView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="137dp"
+            android:gravity="left"
+            android:text="地址："
+            android:textSize="30dp" />
+
+        <EditText
+            android:id="@+id/address"
+            android:layout_width="212dp"
+            android:layout_height="40dp"
+            android:layout_alignTop="@+id/addrView"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="2dp"
+            android:layout_toRightOf="@+id/addrView"
+            android:ems="19"
+            android:hint="请输入地址"
+            android:inputType="number"
+            android:padding="1dp"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/keyView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="210dp"
+            android:gravity="left"
+            android:text="密钥："
+            android:textSize="30dp" />
+
+        <EditText
+            android:id="@+id/key"
+            android:layout_width="212dp"
+            android:layout_height="40dp"
+            android:layout_alignTop="@+id/keyView"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="2dp"
+            android:layout_toRightOf="@+id/keyView"
+            android:ems="19"
+            android:hint="请输入密钥"
+            android:padding="1dp"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginBottom="105dp"
+            android:text="登陆"
+            android:textSize="30dp" />
+
+    </RelativeLayout>
+
+</LinearLayout>

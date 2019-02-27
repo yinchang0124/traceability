@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">扫码溯源</string>
+    <!--MainActivity-->
+    <string name="foot_left">扫一扫</string>
+    <string name="foot_center">订单</string>
+    <string name="foot_right">我</string>
+    <string name="center_text">暂无订单</string>
+
+    <!--MeActivity-->
+    <string name="user_name">买家1</string>
+    <string name="chain_address">地址：0x1234abde354eef222</string>
+    <string name="chain_value">70 eth</string>
+    <string name="user_info">详细信息</string>
+
+    <!--PigInfoActivity-->
+    <string name="pig_info">生猪详情</string>
+    <string name="ERC721">ERC721:</string>
+    <string name="price">价格：10eth</string>
+    <string name="breed">品种：</string>
+    <string name="weight">体重：大约KG</string>
+    <string name="btntext_buy">确认购买</string>
+
+    <!--address for buy and sell-->
+    <string name="buy_address">123456</string>
+    <string name="sell_address">654321</string>
+    <string name="buy_key">123456</string>
+    <string name="sell_key">654321</string>
+    <string name="balance">余额：</string>
+
+    <!--address for contract-->
+    <string name="contract">0x1234567655</string>
+</resources>
