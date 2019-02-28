@@ -21,10 +21,13 @@
         <activity android:name=".ValueActivity" />
         <activity android:name=".buyActivity" />
         <activity android:name=".sellActivity" />
-        <activity android:name=".addpigActivity" />
         <activity android:name=".sellScanActivity" />
         <activity android:name=".sellpiginfoActivity" />
-        <activity android:name=".buyinfoActivity"></activity>
+        <activity android:name=".buyinfoActivity" />
+        <activity
+            android:name=".receiptActivity"
+            android:label="@string/title_activity_receipt"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

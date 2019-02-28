@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,10 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         login.setOnClickListener(this);
 
         address = (EditText) findViewById(R.id.address);
-        address.setOnClickListener(this);
-
         key = (EditText) findViewById(R.id.key);
-        key.setOnClickListener(this);
 
     }
 
@@ -40,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if(v.getId()==R.id.login){
             Intent intent=new Intent(this,ValueActivity.class);
-
             if(address.equals(this.getResources().getText(R.string.buy_address)) && key.equals(this.getResources().getText(R.string.buy_key))){
                 intent.putExtra("address",this.getResources().getText(R.string.buy_address));
                 intent.putExtra("balance",this.getResources().getText(R.string.buy_key));

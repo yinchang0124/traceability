@@ -30,10 +30,11 @@
                 android:layout_height="50dp"
                />
             <TextView
+                android:id="@+id/title"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorFont"
-                android:text="个人信息"
+                android:text="@string/info"
                 android:textSize="40dp"/>
 
             <TextView
@@ -64,6 +65,14 @@
                 android:layout_width="fill_parent"
                 android:layout_height="80dp"
                 />
+
+            <Button
+                android:id="@+id/logout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="退出登录"
+                android:textSize="30dp"/>
 
         </LinearLayout>
 

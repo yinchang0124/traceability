@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,37 +20,65 @@ import com.yzq.zxinglibrary.common.Constant;
 
 import org.w3c.dom.Text;
 
+import java.security.PublicKey;
 import java.util.List;
 
 public class ValueActivity extends AppCompatActivity implements View.OnClickListener {
+
     private Button btn_me;
     private Button btn_scan;
+    private Button btn_order;
+    private  Button btn_logout;
     private int REQUEST_CODE_SCAN = 111;
-    private  TextView address;
+    public TextView address;
+    private  TextView balance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_value);
+
         btn_me=(Button)findViewById(R.id.btn_me);
         btn_me.setOnClickListener(this);
 
         btn_scan=(Button)findViewById(R.id.btn_scan);
         btn_scan.setOnClickListener(this);
 
-        address = (TextView) findViewById(R.id.address);
+        btn_order=(Button)findViewById(R.id.btn_orderlist);
+        btn_order.setOnClickListener(this);
 
-        Intent intent=getIntent();
-//        address= intent.getStringExtra("address");
+        btn_logout = (Button)findViewById(R.id.logout);
+        btn_logout.setOnClickListener(this);
+
+        address = (TextView) findViewById(R.id.address);
+        balance = (TextView)findViewById(R.id.balance);
+
+        String addr=getResources().getString(R.string.buy_address);
+        address.setText("地址："+addr);
+
+        String balanceof = getResources().getString(R.string.buy_key);
+        balance.setText("余额："+ balanceof);
     }
 
 
     @Override
     public void onClick(View v) {
+
         if(v.getId()==R.id.btn_me){
-            Intent intent=new Intent(this,buyActivity.class);
+            Intent intent=new Intent(this,ValueActivity.class);
             startActivity(intent);
         }
+
+        if(v.getId()==R.id.btn_orderlist){
+            Intent intent=new Intent(this,receiptActivity.class);
+            startActivity(intent);
+        }
+
+        if(v.getId()==R.id.logout){
+            Intent intent=new Intent(this,MainActivity.class);
+            startActivity(intent);
+        }
+
         if(v.getId()==R.id.btn_scan){
             AndPermission.with(this)
                     .permission(Permission.CAMERA, Permission.READ_EXTERNAL_STORAGE)
@@ -89,7 +118,5 @@ public class ValueActivity extends AppCompatActivity implements View.OnClickList
                         }
                     }).start();
         }
-
-
     }
 }

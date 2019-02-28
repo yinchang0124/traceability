@@ -21,6 +21,7 @@
     <string name="btntext_buy">确认购买</string>
 
     <!--address for buy and sell-->
+    <string name="info">信息</string>
     <string name="buy_address">123456</string>
     <string name="sell_address">654321</string>
     <string name="buy_key">123456</string>
@@ -29,4 +30,5 @@
 
     <!--address for contract-->
     <string name="contract">0x1234567655</string>
+    <string name="title_activity_receipt">receiptActivity</string>
 </resources>
