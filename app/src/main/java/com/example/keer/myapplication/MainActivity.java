@@ -22,8 +22,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String k;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,13 +30,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         login=(Button)findViewById(R.id.login);
         login.setOnClickListener(this);
 
-
-
     }
 
 
     @Override
     public void onClick(View v) {
+
         if(v.getId()==R.id.login){
 
             address = (EditText) findViewById(R.id.address);
@@ -46,32 +43,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             key = (EditText) findViewById(R.id.key);
             k = key.getEditableText().toString();
 
-            Intent intent=new Intent(this,ValueActivity.class);
+
             if(addr.equals(this.getResources().getText(R.string.buy_address)) && k.equals(this.getResources().getText(R.string.buy_key))){
+                Intent intent=new Intent(this,ValueActivity.class);
                 intent.putExtra("address",addr);
                 intent.putExtra("balance",k);
                 startActivity(intent);
             }
             if(addr.equals(this.getResources().getText(R.string.sell_address)) && k.equals(this.getResources().getText(R.string.sell_key))){
-                intent.putExtra("address",this.getResources().getText(R.string.sell_address));
-                intent.putExtra("balance",this.getResources().getText(R.string.sell_key));
+                Intent intent=new Intent(this,ValueActivity.class);
+                intent.putExtra("address",addr);
+                intent.putExtra("balance",k);
                 startActivity(intent);
             }
             else {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("登陆信息")
-                        .setMessage("登陆失败！")
+                builder.setTitle("登陆提示")
+                        .setMessage("登陆失败！请重新登录！")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Intent intent=new Intent(builder.getContext(),ValueActivity.class);
+                                Intent intent=new Intent(builder.getContext(),MainActivity.class);
                                 startActivity(intent);
                             }
                         });
-                AlertDialog mydialog2 = builder.create();
-                mydialog2.show();
+                AlertDialog login = builder.create();
+                login.show();
             }
-            startActivity(intent);
         }
     }
 

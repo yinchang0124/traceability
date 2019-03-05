@@ -18,6 +18,7 @@
     <string name="price">价格：10eth</string>
     <string name="breed">品种：</string>
     <string name="weight">体重：大约KG</string>
+    <string name="status">状态：0</string>
     <string name="btntext_buy">确认购买</string>
 
     <!--address for buy and sell-->
@@ -26,9 +27,10 @@
     <string name="sell_address">654321</string>
     <string name="buy_key">123456</string>
     <string name="sell_key">654321</string>
-    <string name="balance">余额：</string>
+    <string name="balance">100ETH</string>
 
     <!--address for contract-->
     <string name="contract">0x1234567655</string>
     <string name="title_activity_receipt">receiptActivity</string>
+    <string name="title_activity_sellshipment">sellshipmentActivity</string>
 </resources>

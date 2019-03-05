@@ -46,7 +46,6 @@
             android:layout_toRightOf="@+id/addrView"
             android:ems="19"
             android:hint="请输入地址"
-            android:inputType="number"
             android:padding="1dp"
             android:textSize="12sp" />
 
@@ -70,6 +69,7 @@
             android:layout_toRightOf="@+id/keyView"
             android:ems="19"
             android:hint="请输入密钥"
+            android:inputType="textPassword"
             android:padding="1dp"
             android:textSize="12sp" />
 

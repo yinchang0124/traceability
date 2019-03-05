@@ -1,11 +1,12 @@
 package com.example.keer.myapplication;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -23,23 +24,23 @@ import org.w3c.dom.Text;
 import java.security.PublicKey;
 import java.util.List;
 
-public class ValueActivity extends AppCompatActivity implements View.OnClickListener {
-
+public class sellshipmentActivity extends AppCompatActivity implements View.OnClickListener{
+    private int REQUEST_CODE_SCAN = 111;
     private Button btn_me;
     private Button btn_scan;
     private Button btn_order;
-    private  Button btn_logout;
-    private int REQUEST_CODE_SCAN = 111;
-    private TextView address;
-    private  TextView balance;
-    private TextView title;
-    String addr;
-    String balanceof;
+    private Button btn_shipment;
+    private TextView tx_ID;
+    private TextView tx_money;
+    private TextView tx_buy_address;
+    private TextView tx_status;
+    String address;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_value);
+        setContentView(R.layout.activity_sell_shipment);
 
         btn_me=(Button)findViewById(R.id.btn_me);
         btn_me.setOnClickListener(this);
@@ -50,28 +51,15 @@ public class ValueActivity extends AppCompatActivity implements View.OnClickList
         btn_order=(Button)findViewById(R.id.btn_orderlist);
         btn_order.setOnClickListener(this);
 
-        btn_logout = (Button)findViewById(R.id.logout);
-        btn_logout.setOnClickListener(this);
+        btn_shipment=(Button)findViewById(R.id.btn_sell_shipment);
+        btn_shipment.setOnClickListener(this);
 
-        address = (TextView) findViewById(R.id.address);
-        balance = (TextView)findViewById(R.id.balance);
-        title = (TextView)findViewById(R.id.title);
+        tx_ID = (TextView)findViewById(R.id.sell_shipment_id);
+        tx_money = (TextView)findViewById(R.id.sell_shipment_money);
+        tx_buy_address = (TextView)findViewById(R.id.sell_shipment_addr);
+        tx_status = (TextView)findViewById(R.id.sell_shipment_state);
 
-        Intent intent=getIntent();
-        addr = intent.getStringExtra("address");
-
-        if( addr.equals(address.getResources().getText(R.string.buy_address))){
-            title.setText("买家"+title.getResources().getText(R.string.info));
-            address.setText("地址："+addr);
-        }else {
-            title.setText("卖家"+title.getResources().getText(R.string.info));
-            address.setText("地址："+addr);
-        }
-
-//        balanceof = intent.getStringExtra("balance");
-        balance.setText("余额："+ balance.getResources().getText(R.string.balance));
     }
-
 
     @Override
     public void onClick(View v) {
@@ -82,19 +70,23 @@ public class ValueActivity extends AppCompatActivity implements View.OnClickList
         }
 
         if(v.getId()==R.id.btn_orderlist){
-            if( addr.equals(address.getResources().getText(R.string.buy_address))){
-                Intent intent=new Intent(this,receiptActivity.class);
-                startActivity(intent);
-            }else {
-                Intent intent=new Intent(this,sellshipmentActivity.class);
-                startActivity(intent);
-            }
-
+            Intent intent=new Intent(this,receiptActivity.class);
+            startActivity(intent);
         }
 
-        if(v.getId()==R.id.logout){
-            Intent intent=new Intent(this,MainActivity.class);
-            startActivity(intent);
+        if(v.getId()==R.id.btn_sell_shipment){
+            final AlertDialog.Builder builder = new AlertDialog.Builder(sellshipmentActivity.this);
+            builder.setTitle("订单详情")
+                    .setMessage("收货成功")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent=new Intent(builder.getContext(),sellshipmentActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+            AlertDialog mydialog2 = builder.create();
+            mydialog2.show();
         }
 
         if(v.getId()==R.id.btn_scan){
@@ -103,7 +95,7 @@ public class ValueActivity extends AppCompatActivity implements View.OnClickList
                     .onGranted(new Action() {
                         @Override
                         public void onAction(List<String> permissions) {
-                            Intent intent = new Intent(ValueActivity.this, CaptureActivity.class);
+                            Intent intent = new Intent(sellshipmentActivity.this, CaptureActivity.class);
 
                             /*ZxingConfig是配置类
                              *可以设置是否显示底部布局，闪光灯，相册，
@@ -132,7 +124,7 @@ public class ValueActivity extends AppCompatActivity implements View.OnClickList
 
                             startActivity(intent);
 
-                            Toast.makeText(ValueActivity.this, "没有权限无法扫描呦", Toast.LENGTH_LONG).show();
+                            Toast.makeText(sellshipmentActivity.this, "没有权限无法扫描呦", Toast.LENGTH_LONG).show();
                         }
                     }).start();
         }

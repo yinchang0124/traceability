@@ -88,7 +88,7 @@ public class sellActivity extends AppCompatActivity implements  View.OnClickList
         }
     }
 
-    public  void scan(){
+    public void scan(){
         AndPermission.with(this)
                 .permission(Permission.CAMERA, Permission.READ_EXTERNAL_STORAGE)
                 .onGranted(new Action() {
