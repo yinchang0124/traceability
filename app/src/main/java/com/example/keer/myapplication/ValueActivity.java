@@ -32,6 +32,7 @@ public class ValueActivity extends AppCompatActivity implements View.OnClickList
     private int REQUEST_CODE_SCAN = 111;
     public TextView address;
     private  TextView balance;
+    String addr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +54,14 @@ public class ValueActivity extends AppCompatActivity implements View.OnClickList
         address = (TextView) findViewById(R.id.address);
         balance = (TextView)findViewById(R.id.balance);
 
-        String addr=getResources().getString(R.string.buy_address);
-        address.setText("地址："+addr);
+        Intent intent=getIntent();
+        addr = intent.getStringExtra("address");
 
-        String balanceof = getResources().getString(R.string.buy_key);
-        balance.setText("余额："+ balanceof);
+//        String addr=getResources().getString(R.string.buy_address);
+        address.setText("地址："+addr);
+//
+//        String balanceof = getResources().getString(R.string.buy_key);
+//        balance.setText("余额："+ balanceof);
     }
 
 

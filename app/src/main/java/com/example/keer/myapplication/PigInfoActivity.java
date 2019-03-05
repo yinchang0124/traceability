@@ -16,7 +16,6 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
 
     private Button btn_buy;
 
-    private TextView textView;
     String address;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,20 +38,6 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
         btn_buy=(Button)findViewById(R.id.btn_buy);
         btn_buy.setOnClickListener(this);
 
-        textView=(TextView)findViewById(R.id.tv_send);
-
-        if(address.equals(this.getResources().getText(R.string.buy_address))){
-            textView.setText("卖家："+address);
-            //TODO 根据合约状态按钮文字
-
-            btn_buy.setText("确认购买");
-        }
-        else {
-            textView.setText("买家："+address);
-            //TODO 根据合约状态按钮文字
-
-            btn_buy.setText("确认发货");
-        }
     }
     @Override
     public void onClick(View v) {
