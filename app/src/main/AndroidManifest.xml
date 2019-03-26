@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.keer.myapplication">
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,7 +26,6 @@
         </activity>
         <activity android:name=".scanActivity" />
         <activity android:name=".PigInfoActivity" />
-        <activity android:name=".ValueActivity" />
         <activity android:name=".buyActivity" />
         <activity android:name=".sellActivity" />
         <activity android:name=".sellScanActivity" />
@@ -28,7 +35,13 @@
         <activity
             android:name=".sellshipmentActivity"
             android:label="@string/title_activity_sellshipment"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".InfoActivity" />
+        <activity
+            android:name=".testActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" />
+        <activity android:name=".MyFileManager" />
+        <activity android:name=".Main2Activity" />
     </application>
 
 </manifest>

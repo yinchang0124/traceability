@@ -65,7 +65,7 @@ public class sellshipmentActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
 
         if(v.getId()==R.id.btn_me){
-            Intent intent=new Intent(this,ValueActivity.class);
+            Intent intent=new Intent(this,InfoActivity.class);
             startActivity(intent);
         }
 

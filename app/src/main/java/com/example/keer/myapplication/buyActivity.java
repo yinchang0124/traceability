@@ -71,7 +71,7 @@ public class buyActivity extends AppCompatActivity implements View.OnClickListen
             scan();
         }
         if(v.getId()==R.id.tv_value){
-            Intent intent=new Intent(this,ValueActivity.class);
+            Intent intent=new Intent(this,PigInfoActivity.class);
             startActivity(intent);
         }
         if(v.getId()==R.id.log_out){

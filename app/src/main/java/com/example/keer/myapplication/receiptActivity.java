@@ -40,7 +40,7 @@ public class receiptActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy_receipt);
 
-        btn_me=(Button)findViewById(R.id.btn_me);
+        btn_me=(Button)findViewById(R.id.btn_info);
         btn_me.setOnClickListener(this);
 
         btn_scan=(Button)findViewById(R.id.btn_scan);
@@ -57,8 +57,8 @@ public class receiptActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
 
-        if(v.getId()==R.id.btn_me){
-            Intent intent=new Intent(this,ValueActivity.class);
+        if(v.getId()==R.id.btn_info){
+            Intent intent=new Intent(this,InfoActivity.class);
             startActivity(intent);
         }
 
@@ -74,7 +74,7 @@ public class receiptActivity extends AppCompatActivity implements View.OnClickLi
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Intent intent=new Intent(builder.getContext(),ValueActivity.class);
+                            Intent intent=new Intent(builder.getContext(),InfoActivity.class);
                             startActivity(intent);
                         }
                     });

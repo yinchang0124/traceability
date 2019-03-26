@@ -17,84 +17,93 @@ import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
 import com.yzq.zxinglibrary.common.Constant;
 
+
 import java.util.List;
 
-public class sellActivity extends AppCompatActivity implements  View.OnClickListener {
+public class InfoActivity extends AppCompatActivity implements View.OnClickListener{
+
     private Button btn_me;
     private Button btn_scan;
-    private Button btn_logout;
-    private TextView tv_value;
-    private TextView tv_info;
-
+    private Button btn_order;
+    private  Button btn_logout;
     private int REQUEST_CODE_SCAN = 111;
+    private TextView address;
+    private  TextView balance;
+    private TextView title;
+    String addr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sell);
-        btn_me=(Button)findViewById(R.id.btn_me);
+        setContentView(R.layout.activity_info);
+
+        btn_me=(Button)findViewById(R.id.btn_info);
         btn_me.setOnClickListener(this);
 
         btn_scan=(Button)findViewById(R.id.btn_scan);
         btn_scan.setOnClickListener(this);
 
-        tv_value=(TextView)findViewById(R.id.tv_value);
-        tv_value.setOnClickListener(this);
+        btn_order=(Button)findViewById(R.id.btn_orderlist);
+        btn_order.setOnClickListener(this);
 
-        tv_info=(TextView)findViewById(R.id.tv_info);
-        tv_info.setOnClickListener(this);
-
-        btn_logout=(Button)findViewById(R.id.log_out);
+        btn_logout = (Button)findViewById(R.id.btn_logout);
         btn_logout.setOnClickListener(this);
+
+        address = (TextView) findViewById(R.id.txt_address);
+        balance = (TextView)findViewById(R.id.txt_balance);
+        title = (TextView)findViewById(R.id.txt_title);
+
+        Intent intent=getIntent();
+        addr = intent.getStringExtra("address");
+
+        if( addr.equals(address.getResources().getText(R.string.buy_address))){
+            title.setText("买家"+title.getResources().getText(R.string.info));
+            address.setText("地址："+addr);
+        }else {
+            title.setText("卖家"+title.getResources().getText(R.string.info));
+            address.setText("地址："+addr);
+        }
+
+        balance.setText("余额："+ balance.getResources().getText(R.string.balance));
     }
+
 
     @Override
     public void onClick(View v) {
-        if(v.getId()==R.id.btn_me){
-            Intent intent=new Intent(this,sellActivity.class);
-            startActivity(intent);
+
+//        if(v.getId()==R.id.btn_info){
+//            Intent intent=new Intent(this,InfoActivity.class);
+//            startActivity(intent);
+//        }
+
+        if(v.getId()==R.id.btn_orderlist){
+            if( addr.equals(address.getResources().getText(R.string.buy_address))){
+                Intent intent=new Intent(this,receiptActivity.class);
+                startActivity(intent);
+            }else {
+                Intent intent=new Intent(this,sellshipmentActivity.class);
+                startActivity(intent);
+            }
+
         }
-        if(v.getId()==R.id.btn_scan){
-            scan();
-        }
-        if(v.getId()==R.id.tv_value){
-            Intent intent=new Intent(this,InfoActivity.class);
-            startActivity(intent);
-        }
-        if(v.getId()==R.id.log_out){
+
+        if(v.getId()==R.id.btn_logout){
             Intent intent=new Intent(this,MainActivity.class);
             startActivity(intent);
         }
-        if(v.getId()==R.id.tv_info){
-            Intent intent=new Intent(this,sellpiginfoActivity.class);
-            startActivity(intent);
+
+        if(v.getId()==R.id.btn_scan) {
+            scan();
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // 扫描二维码/条码回传
-        if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
-            if (data != null) {
-                //TODO PIG.sol
-                String content = data.getStringExtra(Constant.CODED_CONTENT);
-//                result.setText("扫描结果为：" + content);
-                Intent intent = new Intent(this,PigInfoActivity.class);
-                intent.putExtra("ERC721",content);
-                intent.putExtra("address","jjjjjjjjjjjjjjjj");
-                startActivity(intent);
-            }
-        }
-    }
-
-    public void scan(){
+    public  void scan(){
         AndPermission.with(this)
                 .permission(Permission.CAMERA, Permission.READ_EXTERNAL_STORAGE)
                 .onGranted(new Action() {
                     @Override
                     public void onAction(List<String> permissions) {
-                        Intent intent = new Intent(sellActivity.this, CaptureActivity.class);
+                        Intent intent = new Intent(InfoActivity.this, CaptureActivity.class);
 
                         /*ZxingConfig是配置类
                          *可以设置是否显示底部布局，闪光灯，相册，
@@ -123,8 +132,25 @@ public class sellActivity extends AppCompatActivity implements  View.OnClickList
 
                         startActivity(intent);
 
-                        Toast.makeText(sellActivity.this, "没有权限无法扫描呦", Toast.LENGTH_LONG).show();
+                        Toast.makeText(InfoActivity.this, "没有权限无法扫描呦", Toast.LENGTH_LONG).show();
                     }
                 }).start();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // 扫描二维码/条码回传
+        if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
+            if (data != null) {
+
+                String content = data.getStringExtra(Constant.CODED_CONTENT);
+                //result.setText("扫描结果为：" + content);
+                Intent intent = new Intent(this,PigInfoActivity.class);
+                intent.putExtra("BigChainDB",content);
+                startActivity(intent);
+            }
+        }
     }
 }

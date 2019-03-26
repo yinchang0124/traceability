@@ -4,18 +4,15 @@
     android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".PigInfoActivity">
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="horizontal"
-        android:layout_weight="1">
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:layout_weight="1">
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -25,47 +22,68 @@
 
             <TextView
                 android:id="@+id/tv_pigInfo"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
                 android:layout_weight="4"
                 android:gravity="center"
                 android:text="@string/pig_info"
-                android:textColor="@color/colorFont"
+                android:textColor="@color/colorPrimary"
                 android:textSize="30dp" />
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="53dp"
+                android:layout_weight="1"
+                android:src="@drawable/head" />
+
             <TextView
-                android:id="@+id/tv_ERC"
+                android:id="@+id/tv_ERC721_id"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/ERC721" />
+                android:text="@string/ERC721"
+                android:textSize="20dp" />
+
 
             <TextView
                 android:id="@+id/tv_breed"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/breed" />
+                android:text="@string/breed"
+                android:textSize="20dp" />
 
             <TextView
-                android:id="@+id/tv_weight"
+                android:id="@+id/tv_bigchaindb_id"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/weight" />
+                android:text="@string/bigchainDB"
+                android:textSize="20dp" />
 
             <TextView
                 android:id="@+id/tv_price"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/price" />
+                android:text="价格："
+                android:textSize="20dp" />
 
             <TextView
-                android:id="@+id/tv_send"
+                android:id="@+id/tv_status"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:text="当前状态："
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/tv_address"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="所属地址："
+                android:textSize="20dp" />
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -74,18 +92,13 @@
                 android:gravity="center">
 
                 <Button
-                    android:id="@+id/btn_buy"
+                    android:id="@+id/btn_commit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top|center"
-                    android:text="@string/btntext_buy" />
+                    android:text="@string/btntext_buy"
+                    android:textSize="25dp" />
             </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:layout_weight="1">
         </LinearLayout>
     </LinearLayout>
 
@@ -105,13 +118,24 @@
 
 
             <Button
+                android:id="@+id/btn_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:text="@string/menu_home"
+                android:textColor="@color/front"
+                android:textSize="18dp" />
+
+            <Button
                 android:id="@+id/btn_scan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/colorPrimary"
                 android:layout_weight="1"
-                android:text="@string/foot_left"
-                android:textSize="18dp"/>
+                android:text="@string/menu_scan"
+                android:textSize="18dp"
+                android:textColor="@color/front"/>
 
             <Button
                 android:id="@+id/btn_orderlist"
@@ -119,18 +143,9 @@
                 android:layout_height="wrap_content"
                 android:background="@color/colorPrimary"
                 android:layout_weight="1"
-                android:text="@string/foot_center"
-                android:textSize="18dp"/>
-
-
-            <Button
-                android:id="@+id/btn_me"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
-                android:layout_weight="1"
-                android:text="@string/foot_right"
-                android:textSize="18dp"/>
+                android:text="@string/menu_orderlist"
+                android:textSize="18dp"
+                android:textColor="@color/front"/>
 
         </LinearLayout>
 
