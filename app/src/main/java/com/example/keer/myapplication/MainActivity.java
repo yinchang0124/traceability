@@ -16,6 +16,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.example.keer.myapplication.OkHttpUtil.CallBackUtil;
+import com.example.keer.myapplication.OkHttpUtil.OkHttpUtil;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.web3j.crypto.CipherException;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.WalletUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +34,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.ref.SoftReference;
+import java.util.HashMap;
+import java.util.Map;
+
+import jnr.ffi.Struct;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 
 public class MainActivity extends Activity implements View.OnClickListener {
@@ -66,6 +90,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         if(v.getId() == R.id.btn_open){
 
+            password = (EditText) findViewById(R.id.input_password);
+            pass = password.getEditableText().toString();
 
             //若输入的文件夹名为空
             if(et_folder.getText().toString().trim().equals("")){
@@ -77,12 +103,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 //根目录下某个txt文件名
                 File path = new File(sdDir+File.separator + et_folder.getText().toString().trim());
 
+
                 // 判断SD卡是否存在，并且是否具有读写权限
                 if (Environment.getExternalStorageState()
                         .equals(Environment.MEDIA_MOUNTED)) {
                     address.setText("");
                     address.setText(getFileContent(path));
-
                     addr = getFileContent(path);
                 }
             }
@@ -101,34 +127,70 @@ public class MainActivity extends Activity implements View.OnClickListener {
             pass = password.getEditableText().toString();
 
 
-            if(acc.equals(this.getResources().getText(R.string.buy_account)) && pass.equals(this.getResources().getText(R.string.buy_key))){
-                Intent intent=new Intent(this,InfoActivity.class);
-                intent.putExtra("acc",acc);
-                intent.putExtra("balance",pass);
-                intent.putExtra("address",addr);
-                startActivity(intent);
-            }
+            /**
+            * 发送HTTP请求
+            * 用户登录
+            * */
+            HashMap<String,String> jsonmap=new HashMap<>();
+            jsonmap.put("account",acc);
+            jsonmap.put("password", pass);
+            jsonmap.put("address", addr);
 
-            else if(acc.equals(this.getResources().getText(R.string.sell_address)) && pass.equals(this.getResources().getText(R.string.sell_key))){
-                Intent intent=new Intent(this,InfoActivity.class);
-                intent.putExtra("address",acc);
-                intent.putExtra("balance",pass);
-                startActivity(intent);
-            }
-            else {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("登陆提示")
-                        .setMessage("登陆失败！请重新登录！")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent=new Intent(builder.getContext(),MainActivity.class);
-                                startActivity(intent);
-                            }
-                        });
-                AlertDialog login = builder.create();
-                login.show();
-            }
+            Map map=new HashMap<>();
+            map.put("data",jsonmap);
+            Gson gson=new Gson();
+
+            OkHttpClient client = new OkHttpClient();
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");//数据类型为json格式，
+
+            RequestBody body = RequestBody.create(JSON, gson.toJson(map));
+            Request request = new Request.Builder()
+                    .url("http://192.168.137.1:8080/login")
+                    .post(body)
+                    .build();
+            client.newCall(request).enqueue(new Callback() {
+
+                public Object onParseResponse(Call call, Response response) {
+                    return null;
+                }
+
+                @Override
+                public void onFailure(Call call, IOException e) {
+                   // Toast.makeText(MainActivity.this, "http fail", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String string = response.body().string();
+                    Log.i("info",string+"");
+                    Map json = (Map) com.alibaba.fastjson.JSONObject.parse(string);
+
+                    if(json.get("message").toString().equals("success")){
+                    Intent intent = new Intent(MainActivity.this, InfoActivity.class);
+                    intent.putExtra("address",addr);
+                    intent.putExtra("addr",addr);
+                    startActivity(intent);
+                    finish();
+                }else{
+                    Toast.makeText(MainActivity.this, "account or password is  invalid", Toast.LENGTH_SHORT).show();
+                }
+                }
+            });
+
+//            else {
+//                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//                builder.setTitle("登陆提示")
+//                        .setMessage("登陆失败！请重新登录！")
+//                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                Intent intent=new Intent(builder.getContext(),MainActivity.class);
+//                                startActivity(intent);
+//                            }
+//                        });
+//                AlertDialog login = builder.create();
+//                login.show();
+//            }
         }
     }
 
@@ -148,10 +210,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         String line="";
                         //分行读取
                         while (( line = buffreader.readLine()) != null) {
-                            content += line + "\n";
+                            content =line;
                         }
                         instream.close();		//关闭输入流
 
+                        Map map= (Map) JSON.parse(content);
+                        content = map.get("address").toString();
                         Log.i("11", "The File doesn't not exist " + content);
                     }
                 }
@@ -163,7 +227,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 }
             }
         }
-        return content ;
+        return "0x" + content ;
     }
 
 }

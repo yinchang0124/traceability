@@ -33,7 +33,7 @@
                 android:layout_marginTop="186dp"
                 android:paddingLeft="24dp"
                 android:paddingRight="24dp"
-                android:text="@string/balance"
+                android:text="balance"
                 android:textSize="25dp" />
         </RelativeLayout>
 

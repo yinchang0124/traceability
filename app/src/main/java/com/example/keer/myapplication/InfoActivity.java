@@ -2,14 +2,17 @@ package com.example.keer.myapplication;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;
@@ -18,7 +21,18 @@ import com.yzq.zxinglibrary.bean.ZxingConfig;
 import com.yzq.zxinglibrary.common.Constant;
 
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class InfoActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -30,12 +44,18 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
     private TextView address;
     private  TextView balance;
     private TextView title;
+
     String addr;
+    String balanceOf;
+    private Handler handler=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
+
+        //创建属于主线程的handler
+        handler=new Handler();
 
         btn_me=(Button)findViewById(R.id.btn_info);
         btn_me.setOnClickListener(this);
@@ -58,14 +78,67 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
 
         if( addr.equals(address.getResources().getText(R.string.buy_address))){
             title.setText("买家"+title.getResources().getText(R.string.info));
-            address.setText("地址："+addr);
+            address.setText("地址"+addr);
         }else {
             title.setText("卖家"+title.getResources().getText(R.string.info));
-            address.setText("地址："+addr);
+            address.setText("地址"+addr);
         }
 
-        balance.setText("余额："+ balance.getResources().getText(R.string.balance));
+        /**
+         * 发送HTTP请求
+         * 查询当前账户余额
+         * */
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url("http://192.168.137.1:8080/getBalanceOf/"+ addr)
+                .get()
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+
+            public Object onParseResponse(Call call, Response response) {
+                return null;
+            }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(InfoActivity.this, "error", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                Log.i("info",string+"");
+                Map json = (Map) com.alibaba.fastjson.JSONObject.parse(string);
+
+                balanceOf = json.get("data").toString();
+                if(json.get("message").toString().equals("success")){
+                   // balance.setText("正在加载......");
+                    //balance.setText(balanceOf);
+                    new Thread(){
+                        public void run(){
+                            handler.post(runnableUi);
+                        }
+                    }.start();
+                }else{
+                    Toast.makeText(InfoActivity.this, "fail", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
+
+    // 构建Runnable对象，在runnable中更新界面
+    Runnable runnableUi=new  Runnable(){
+        @Override
+        public void run() {
+            //更新界面
+            balance.setText("余额："+balanceOf + "ETH");
+        }
+    };
 
 
     @Override
@@ -78,10 +151,10 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
 
         if(v.getId()==R.id.btn_orderlist){
             if( addr.equals(address.getResources().getText(R.string.buy_address))){
-                Intent intent=new Intent(this,receiptActivity.class);
+                Intent intent=new Intent(this,PigInfoActivity.class);
                 startActivity(intent);
             }else {
-                Intent intent=new Intent(this,sellshipmentActivity.class);
+                Intent intent=new Intent(this,PigInfoActivity.class);
                 startActivity(intent);
             }
 
@@ -105,7 +178,7 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
                     public void onAction(List<String> permissions) {
                         Intent intent = new Intent(InfoActivity.this, CaptureActivity.class);
 
-                        /*ZxingConfig是配置类
+                        /**ZxingConfig是配置类
                          *可以设置是否显示底部布局，闪光灯，相册，
                          * 是否播放提示音  震动
                          * 设置扫描框颜色等
