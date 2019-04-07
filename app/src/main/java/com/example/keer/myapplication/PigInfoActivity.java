@@ -179,10 +179,64 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
             startActivity(intent);
         }
         if(v.getId()==R.id.btn_commit){
-
             final AlertDialog.Builder builder = new AlertDialog.Builder(PigInfoActivity.this);
-            if(addr.equals(this.getResources().getText(R.string.buy_address))){
-                //TODO 根据合约状态改变文字
+            if (status.equals(0)){
+
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .url("http://192.168.137.1:8080/getPigInfo/" + BigChainDB)
+                        .get()
+                        .build();
+                client.newCall(request).enqueue(new Callback() {
+
+                    public Object onParseResponse(Call call, Response response) {
+                        return null;
+                    }
+
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(PigInfoActivity.this, "error", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+
+                    /**
+                     * 处理返回的json数据
+                     * */
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        String string = response.body().string();
+                        Log.i("info",string+"");
+                        Map json = (Map) com.alibaba.fastjson.JSONObject.parse(string);
+
+                        ERCId = json.get("721ID").toString();
+                        breed = json.get("breed").toString();
+                        status = json.get("status").toString();
+                        addr = json.get("address").toString();
+                        if(json.get("message").toString().equals("success")){
+                            new Thread(){
+                                public void run(){
+                                    handler.post(runnableUi);
+                                }
+                            }.start();
+                        }else{
+                            Toast.makeText(PigInfoActivity.this, "fail", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                builder.setTitle("订单详情")
+                        .setMessage("设置成功")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent=new Intent(builder.getContext(),PigInfoActivity.class);
+                                startActivity(intent);
+                            }
+                        });
+            }else if(status.equals(1)){
                 builder.setTitle("订单详情")
                         .setMessage("购买成功")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -192,10 +246,19 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
                                 startActivity(intent);
                             }
                         });
-            }
-            else{
+            }else if(status.equals(2)){
                 builder.setTitle("订单详情")
-                        .setMessage("确认发货")
+                        .setMessage("发货成功")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent=new Intent(builder.getContext(),PigInfoActivity.class);
+                                startActivity(intent);
+                            }
+                        });
+            }else if(status.equals(3)){
+                builder.setTitle("订单详情")
+                        .setMessage("收货成功")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
