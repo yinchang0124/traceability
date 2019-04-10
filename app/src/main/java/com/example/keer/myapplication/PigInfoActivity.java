@@ -94,9 +94,11 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
         * 查询token信息
          * @param earID
         * */
+        //获取配置的URL
+        String url = this.getString(R.string.URL);
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("http://192.168.137.1:8080/getPigInfo/" + BigChainDB)
+                .url(url + "getPigInfo/" + BigChainDB)
                 .get()
                 .build();
         client.newCall(request).enqueue(new Callback() {
@@ -192,10 +194,12 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
              * 调用preSale
              * @param BigChainDB->earID
              * */
+            //获取配置的URL
+            String url = this.getString(R.string.URL);
             if (status.equals(0)){
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
-                        .url("http://192.168.137.1:8080/preSale/" + BigChainDB)
+                        .url(url + "preSale/" + BigChainDB)
                         .get()
                         .build();
                 client.newCall(request).enqueue(new Callback() {
@@ -259,7 +263,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
             else if(status.equals(1)){
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
-                        .url("http://192.168.137.1:8080/confirmBuy/" + buyAddr + BigChainDB)
+                        .url(url + "confirmBuy/" + buyAddr + BigChainDB)
                         .get()
                         .build();
                 client.newCall(request).enqueue(new Callback() {
@@ -324,7 +328,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
             else if(status.equals(2)){
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
-                        .url("http://192.168.137.1:8080/transfer/" + sellAddr +buyAddr + BigChainDB)
+                        .url(url + "transfer/" + sellAddr +buyAddr + BigChainDB)
                         .get()
                         .build();
                 client.newCall(request).enqueue(new Callback() {
@@ -390,7 +394,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
             else if(status.equals(3)){
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
-                        .url("http://192.168.137.1:8080/changeStatus/" + buyAddr +sellAddr + BigChainDB)
+                        .url(url + "changeStatus/" + buyAddr +sellAddr + BigChainDB)
                         .get()
                         .build();
                 client.newCall(request).enqueue(new Callback() {

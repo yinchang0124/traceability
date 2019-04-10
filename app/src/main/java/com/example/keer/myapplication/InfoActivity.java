@@ -88,9 +88,11 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
          * 发送HTTP请求
          * 查询当前账户余额
          * */
+        //获取配置的URL
+        String url = this.getString(R.string.URL);
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("http://192.168.137.1:8080/getBalanceOf/"+ addr)
+                .url(url + "getBalanceOf/"+ addr)
                 .get()
                 .build();
         client.newCall(request).enqueue(new Callback() {

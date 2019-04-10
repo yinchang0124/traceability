@@ -125,6 +125,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
             acc = account.getEditableText().toString();
             password = (EditText) findViewById(R.id.input_password);
             pass = password.getEditableText().toString();
+            //获取配置的URL
+            String url = this.getString(R.string.URL);
 
 
             /**
@@ -145,7 +147,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             RequestBody body = RequestBody.create(JSON, gson.toJson(map));
             Request request = new Request.Builder()
-                    .url("http://192.168.137.1:8080/login")
+                    .url(url + "login")
                     .post(body)
                     .build();
             client.newCall(request).enqueue(new Callback() {
