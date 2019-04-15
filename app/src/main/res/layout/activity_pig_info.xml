@@ -30,11 +30,25 @@
                 android:textColor="@color/colorPrimary"
                 android:textSize="30dp" />
 
+            <TextView
+                android:id="@+id/buy_address"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="10dp" />
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="53dp"
                 android:layout_weight="1"
                 android:src="@drawable/head" />
+
+            <TextView
+                android:id="@+id/sell_address"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="20dp" />
 
             <TextView
                 android:id="@+id/tv_ERC721_id"

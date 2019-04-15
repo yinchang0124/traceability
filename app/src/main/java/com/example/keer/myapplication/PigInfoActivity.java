@@ -36,6 +36,8 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
     private TextView tx_price;
     private TextView tx_status;
     private TextView tx_address;
+    private TextView tx_sell_address;
+    private TextView tx_buy_address;
 
     String ERCId;
     String breed;
@@ -43,8 +45,8 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
     String status;
     String addr;
 
-    String sellAddr = (String) tx_address.getResources().getText(R.string.sell_address);
-    String buyAddr = (String) tx_address.getResources().getText(R.string.buy_address);
+//    String sellAddr = (String) this.getResources().getText(R.string.sell_address);
+//    String buyAddr = (String) this.getResources().getText(R.string.buy_address);
 
     private Handler handler=null;
 
@@ -77,14 +79,16 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
         tx_breed=(TextView)findViewById(R.id.tv_breed);
 
         tx_bigchainDB=(TextView)findViewById(R.id.tv_bigchaindb_id);
-        tx_bigchainDB.setText("BigChainDB ID:"+BigChainDB);
+        tx_bigchainDB.setText("耳号："+BigChainDB);
 
         tx_price=(TextView)findViewById(R.id.tv_price);
-        tx_price.setText("价格:"+"10ETH");
+        tx_price.setText("价格："+"10ETH");
 
         tx_status=(TextView)findViewById(R.id.tv_status);
 
         tx_address=(TextView)findViewById(R.id.tv_address);
+//        tx_sell_address = (TextView)findViewById(R.id.sell_address);
+//        tx_buy_address = (TextView)findViewById(R.id.buy_address);
         //tx_address.setText("所属地址:"+ addr);
 
 
@@ -98,7 +102,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
         String url = this.getString(R.string.URL);
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url(url + "getPigInfo/" + BigChainDB)
+                .url(url + "getPig/" + BigChainDB)
                 .get()
                 .build();
         client.newCall(request).enqueue(new Callback() {
@@ -124,11 +128,12 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
                 String string = response.body().string();
                 Log.i("info",string+"");
                 Map json = (Map) com.alibaba.fastjson.JSONObject.parse(string);
-
-                ERCId = json.get("721ID").toString();
-                breed = json.get("breed").toString();
-                status = json.get("status").toString();
-                addr = json.get("address").toString();
+                Map data = (Map) json.get("data");
+                Log.i("data",json+"");
+                ERCId = data.get("tokenId").toString();
+                breed = data.get("breed").toString();
+                status = data.get("status").toString();
+                addr = data.get("address").toString();
                 if(json.get("message").toString().equals("success")){
                     new Thread(){
                         public void run(){
@@ -148,25 +153,25 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
         @Override
         public void run() {
             //更新界面
-            tx_ERC721.setText("ERC721 ID："+ERCId);
+            tx_ERC721.setText("Token ID："+ERCId);
             tx_breed.setText("品种：" + breed);
 
             //状态判断
             switch (status){
                 case "0"://饲养  button：出栏
-                    tx_status.setText("当前状态" + "饲养");
+                    tx_status.setText("当前状态：" + "饲养");
                     btn_commit.setText("出栏");break;
                 case "1"://代售  button：确认购买
-                    tx_status.setText("当前状态" + "代售");
+                    tx_status.setText("当前状态：" + "代售");
                     btn_commit.setText("确认购买");break;
                 case "2"://确认购买 button：确认发货
-                    tx_status.setText("当前状态" + "已预定");
+                    tx_status.setText("当前状态：" + "已预定");
                     btn_commit.setText("确认发货");break;
                 case "3"://确认发货  button：确认收货
-                    tx_status.setText("当前状态" + "已发货");
+                    tx_status.setText("当前状态：" + "已发货");
                     btn_commit.setText("确认收货");break;
                 case "4"://确认收货  button：？？
-                    tx_status.setText("当前状态" + "已收货");
+                    tx_status.setText("当前状态：" + "已收货");
                     btn_commit.setText("已售出");break;
             }
 
@@ -197,9 +202,11 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
             //获取配置的URL
             String url = this.getString(R.string.URL);
             if (status.equals(0)){
+                Log.i("info",status+"");
                 OkHttpClient client = new OkHttpClient();
+
                 Request request = new Request.Builder()
-                        .url(url + "preSale/" + BigChainDB)
+                        .url(url + "preSale/" + ERCId + "/" + this.getResources().getText(R.string.sell_address))
                         .get()
                         .build();
                 client.newCall(request).enqueue(new Callback() {
@@ -263,7 +270,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
             else if(status.equals(1)){
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
-                        .url(url + "confirmBuy/" + buyAddr + BigChainDB)
+                        .url(url + "confirmBuy/" + this.getResources().getText(R.string.buy_address) + BigChainDB)
                         .get()
                         .build();
                 client.newCall(request).enqueue(new Callback() {
@@ -328,7 +335,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
             else if(status.equals(2)){
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
-                        .url(url + "transfer/" + sellAddr +buyAddr + BigChainDB)
+                        .url(url + "transfer/" + this.getResources().getText(R.string.sell_address) +this.getResources().getText(R.string.buy_address) + BigChainDB)
                         .get()
                         .build();
                 client.newCall(request).enqueue(new Callback() {
@@ -394,7 +401,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
             else if(status.equals(3)){
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
-                        .url(url + "changeStatus/" + buyAddr +sellAddr + BigChainDB)
+                        .url(url + "changeStatus/" + this.getResources().getText(R.string.buy_address) +this.getResources().getText(R.string.sell_address) + BigChainDB)
                         .get()
                         .build();
                 client.newCall(request).enqueue(new Callback() {

@@ -30,8 +30,8 @@
 
     <!--address for buy and sell-->
     <string name="info">信息</string>
-    <string name="buy_address">0x1b47a428432d230928dc0e5d567c47ae20cd929e</string>
-    <string name="sell_address">0x0b56e51648e513aeba4b76c4f294bdc1cb83f756</string>
+    <string name="buy_address">0xe9fed27334a770717d80b94254db444bffbabec8</string>
+    <string name="sell_address">0x5a17470ae96b910b54a5b715b718dfa792f8b9ae</string>
     <string name="buy_key">123456</string>
     <string name="buy_account">123456</string>
     <string name="sell_key">654321</string>
