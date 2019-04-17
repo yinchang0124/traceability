@@ -3,6 +3,7 @@ package com.example.keer.myapplication;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,18 +13,23 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.keer.myapplication.OkHttpUtil.CallBackUtil;
 import com.example.keer.myapplication.OkHttpUtil.OkHttpUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import static rx.schedulers.Schedulers.start;
 
 public class PigInfoActivity extends AppCompatActivity implements View.OnClickListener  {
     private Button btn_info;
@@ -87,11 +93,6 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
         tx_status=(TextView)findViewById(R.id.tv_status);
 
         tx_address=(TextView)findViewById(R.id.tv_address);
-//        tx_sell_address = (TextView)findViewById(R.id.sell_address);
-//        tx_buy_address = (TextView)findViewById(R.id.buy_address);
-        //tx_address.setText("所属地址:"+ addr);
-
-
 
         /**
         * 发送HTTP请求
@@ -116,6 +117,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
                 runOnUiThread(new Runnable() {
                     public void run() {
                         Toast.makeText(PigInfoActivity.this, "error", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
                     }
                 });
             }
@@ -179,8 +181,18 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
         }
     };
 
+    public void sleep(){
+        try {
+            Thread.sleep(20000000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     @Override
     public void onClick(View v) {
+
         if(v.getId()==R.id.btn_info){
             Intent intent=new Intent(this,InfoActivity.class);
             startActivity(intent);
@@ -201,64 +213,26 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
              * */
             //获取配置的URL
             String url = this.getString(R.string.URL);
-            if (status.equals(0)){
-                Log.i("info",status+"");
+            if (status.equals("0")){
                 OkHttpClient client = new OkHttpClient();
-
                 Request request = new Request.Builder()
                         .url(url + "preSale/" + ERCId + "/" + this.getResources().getText(R.string.sell_address))
-                        .get()
                         .build();
-                client.newCall(request).enqueue(new Callback() {
-
-                    public Object onParseResponse(Call call, Response response) {
-                        return null;
-                    }
-
+                new Thread(new Runnable() {
                     @Override
-                    public void onFailure(Call call, IOException e) {
-                        runOnUiThread(new Runnable() {
-                            public void run() {
-                                Toast.makeText(PigInfoActivity.this, "error", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-
-                    /**
-                     * 处理返回的json数据
-                     * */
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        String string = response.body().string();
-                        Log.i("info",string+"");
-                        Map json = (Map) com.alibaba.fastjson.JSONObject.parse(string);
-
-                        status = json.get("status").toString();
-                        if(json.get("message").toString().equals("success")){
-                            builder.setTitle("订单详情")
-                                    .setMessage("设置成功")
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent intent=new Intent(builder.getContext(),PigInfoActivity.class);
-                                            startActivity(intent);
-                                        }
-                                    });
-                        }else{
-                            builder.setTitle("订单详情")
-                                    .setMessage("设置失败")
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent intent=new Intent(builder.getContext(),PigInfoActivity.class);
-                                            startActivity(intent);
-                                        }
-                                    });
-                           //Toast.makeText(PigInfoActivity.this, "fail", Toast.LENGTH_SHORT).show();
+                    public void run() {
+                        try {
+                           client.newCall(request).execute();
+                            //Log.i("result",response.body().string()+"");
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                    }
-                });
+                }
+                }).start();
+                Toast.makeText(PigInfoActivity.this, "success", Toast.LENGTH_SHORT).show();
             }
+
+
             /**
              * 根据当前状态发出不同的交易请求
              * 状态为1：代售
@@ -267,62 +241,27 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
              * @param address
              * @param earId
              * */
-            else if(status.equals(1)){
+            else if(status.equals("1")){
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
                         .url(url + "confirmBuy/" + this.getResources().getText(R.string.buy_address) + BigChainDB)
                         .get()
                         .build();
-                client.newCall(request).enqueue(new Callback() {
-
-                    public Object onParseResponse(Call call, Response response) {
-                        return null;
-                    }
-
+                new Thread(new Runnable() {
                     @Override
-                    public void onFailure(Call call, IOException e) {
-                        runOnUiThread(new Runnable() {
-                            public void run() {
-                                Toast.makeText(PigInfoActivity.this, "error", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-
-                    /**
-                     * 处理返回的json数据
-                     * */
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        String string = response.body().string();
-                        Log.i("info",string+"");
-                        Map json = (Map) com.alibaba.fastjson.JSONObject.parse(string);
-
-                        status = json.get("status").toString();
-                        if(json.get("message").toString().equals("success")){
-                            builder.setTitle("订单详情")
-                                    .setMessage("购买成功")
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent intent=new Intent(builder.getContext(),InfoActivity.class);
-                                            startActivity(intent);
-                                        }
-                                    });
-                        }else{
-                            builder.setTitle("订单详情")
-                                    .setMessage("购买失败")
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent intent=new Intent(builder.getContext(),PigInfoActivity.class);
-                                            startActivity(intent);
-                                        }
-                                    });
-                            //Toast.makeText(PigInfoActivity.this, "fail", Toast.LENGTH_SHORT).show();
+                    public void run() {
+                        try {
+                            client.newCall(request).execute();
+                            //Log.i("result",response.body().string()+"");
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
-                });
+                }).start();
+                Toast.makeText(PigInfoActivity.this, "success", Toast.LENGTH_SHORT).show();
             }
+
+
             /**
              * 根据当前状态发出不同的交易请求
              * 状态为2：买家确认购买
@@ -332,62 +271,26 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
              * @param toAddress
              * @param earIdA
              */
-            else if(status.equals(2)){
+            else if(status.equals("2")){
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
                         .url(url + "transfer/" + this.getResources().getText(R.string.sell_address) +this.getResources().getText(R.string.buy_address) + BigChainDB)
                         .get()
                         .build();
-                client.newCall(request).enqueue(new Callback() {
-
-                    public Object onParseResponse(Call call, Response response) {
-                        return null;
-                    }
-
+                new Thread(new Runnable() {
                     @Override
-                    public void onFailure(Call call, IOException e) {
-                        runOnUiThread(new Runnable() {
-                            public void run() {
-                                Toast.makeText(PigInfoActivity.this, "error", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-
-                    /**
-                     * 处理返回的json数据
-                     * */
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        String string = response.body().string();
-                        Log.i("info",string+"");
-                        Map json = (Map) com.alibaba.fastjson.JSONObject.parse(string);
-
-                        status = json.get("status").toString();
-                        if(json.get("message").toString().equals("success")){
-                            builder.setTitle("订单详情")
-                                    .setMessage("发货成功")
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent intent=new Intent(builder.getContext(),PigInfoActivity.class);
-                                            startActivity(intent);
-                                        }
-                                    });
-                        }else{
-                            builder.setTitle("订单详情")
-                                    .setMessage("发货失败")
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent intent=new Intent(builder.getContext(),PigInfoActivity.class);
-                                            startActivity(intent);
-                                        }
-                                    });
-                            //Toast.makeText(PigInfoActivity.this, "fail", Toast.LENGTH_SHORT).show();
+                    public void run() {
+                        try {
+                            client.newCall(request).execute();
+                            //Log.i("result",response.body().string()+"");
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
-                });
+                }).start();
+                Toast.makeText(PigInfoActivity.this, "success", Toast.LENGTH_SHORT).show();
             }
+
 
             /**
              * 根据当前状态发出不同的交易请求
@@ -398,66 +301,28 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
              * @param toAddress->sellAddr
              * @param earIdA
              */
-            else if(status.equals(3)){
+            else if(status.equals("3")){
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
                         .url(url + "changeStatus/" + this.getResources().getText(R.string.buy_address) +this.getResources().getText(R.string.sell_address) + BigChainDB)
                         .get()
                         .build();
-                client.newCall(request).enqueue(new Callback() {
-
-                    public Object onParseResponse(Call call, Response response) {
-                        return null;
-                    }
-
+                new Thread(new Runnable() {
                     @Override
-                    public void onFailure(Call call, IOException e) {
-                        runOnUiThread(new Runnable() {
-                            public void run() {
-                                Toast.makeText(PigInfoActivity.this, "error", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-
-                    /**
-                     * 处理返回的json数据
-                     * */
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        String string = response.body().string();
-                        Log.i("info",string+"");
-                        Map json = (Map) com.alibaba.fastjson.JSONObject.parse(string);
-
-                        status = json.get("status").toString();
-                        if(json.get("message").toString().equals("success")){
-                            builder.setTitle("订单详情")
-                                    .setMessage("收货成功")
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent intent=new Intent(builder.getContext(),InfoActivity.class);
-                                            startActivity(intent);
-                                        }
-                                    });
-                        }else{
-                            builder.setTitle("订单详情")
-                                    .setMessage("收货失败")
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent intent=new Intent(builder.getContext(),PigInfoActivity.class);
-                                            startActivity(intent);
-                                        }
-                                    });
-                            //Toast.makeText(PigInfoActivity.this, "fail", Toast.LENGTH_SHORT).show();
+                    public void run() {
+                        try {
+                            client.newCall(request).execute();
+                            //Log.i("result",response.body().string()+"");
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
-                });
+                }).start();
+                Toast.makeText(PigInfoActivity.this, "success", Toast.LENGTH_SHORT).show();
             }
             AlertDialog mydialog2 = builder.create();
             mydialog2.show();
 
         }
-
     }
 }
