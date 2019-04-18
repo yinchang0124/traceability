@@ -169,8 +169,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
                     if(json.get("message").toString().equals("success")){
                     Intent intent = new Intent(MainActivity.this, InfoActivity.class);
-                    intent.putExtra("address",addr);
-                    intent.putExtra("addr",addr);
+//                    intent.putExtra("address",addr);
+                        Constant.address = addr;
+                        Constant.mPassword =pass;
                     startActivity(intent);
                     finish();
                 }else{

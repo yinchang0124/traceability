@@ -73,8 +73,9 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
         balance = (TextView)findViewById(R.id.txt_balance);
         title = (TextView)findViewById(R.id.txt_title);
 
-        Intent intent=getIntent();
-        addr = intent.getStringExtra("address");
+//        Intent intent=getIntent();
+//        addr = intent.getStringExtra("address");
+        addr = com.example.keer.myapplication.Constant.address;
 
         if( addr.equals(address.getResources().getText(R.string.buy_address))){
             title.setText("买家"+title.getResources().getText(R.string.info));
@@ -152,14 +153,8 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
 //        }
 
         if(v.getId()==R.id.btn_orderlist){
-            if( addr.equals(address.getResources().getText(R.string.buy_address))){
-                Intent intent=new Intent(this,PigInfoActivity.class);
-                startActivity(intent);
-            }else {
-                Intent intent=new Intent(this,PigInfoActivity.class);
-                startActivity(intent);
-            }
-
+            Intent intent=new Intent(this,buyinfoActivity.class);
+            startActivity(intent);
         }
 
         if(v.getId()==R.id.btn_logout){

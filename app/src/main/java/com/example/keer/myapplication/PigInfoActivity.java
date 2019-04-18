@@ -2,8 +2,10 @@ package com.example.keer.myapplication;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,9 +18,16 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSONObject;
 import com.example.keer.myapplication.OkHttpUtil.CallBackUtil;
 import com.example.keer.myapplication.OkHttpUtil.OkHttpUtil;
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.Permission;
+import com.yzq.zxinglibrary.android.CaptureActivity;
+import com.yzq.zxinglibrary.bean.ZxingConfig;
+import com.yzq.zxinglibrary.common.Constant;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -42,8 +51,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
     private TextView tx_price;
     private TextView tx_status;
     private TextView tx_address;
-    private TextView tx_sell_address;
-    private TextView tx_buy_address;
+    private int REQUEST_CODE_SCAN = 111;
 
     String ERCId;
     String breed;
@@ -51,8 +59,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
     String status;
     String addr;
 
-//    String sellAddr = (String) this.getResources().getText(R.string.sell_address);
-//    String buyAddr = (String) this.getResources().getText(R.string.buy_address);
+    String password = com.example.keer.myapplication.Constant.mPassword;
 
     private Handler handler=null;
 
@@ -183,9 +190,69 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
 
     public void sleep(){
         try {
-            Thread.sleep(20000000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 扫描二维码
+     * */
+    public  void scan(){
+        AndPermission.with(this)
+                .permission(Permission.CAMERA, Permission.READ_EXTERNAL_STORAGE)
+                .onGranted(new Action() {
+                    @Override
+                    public void onAction(List<String> permissions) {
+                        Intent intent = new Intent(PigInfoActivity.this, CaptureActivity.class);
+
+                        /**ZxingConfig是配置类
+                         *可以设置是否显示底部布局，闪光灯，相册，
+                         * 是否播放提示音  震动
+                         * 设置扫描框颜色等
+                         * 也可以不传这个参数
+                         * */
+                        ZxingConfig config = new ZxingConfig();
+                        // config.setPlayBeep(false);//是否播放扫描声音 默认为true
+                        //  config.setShake(false);//是否震动  默认为true
+                        // config.setDecodeBarCode(false);//是否扫描条形码 默认为true
+//                                config.setReactColor(R.color.colorAccent);//设置扫描框四个角的颜色 默认为白色
+//                                config.setFrameLineColor(R.color.colorAccent);//设置扫描框边框颜色 默认无色
+//                                config.setScanLineColor(R.color.colorAccent);//设置扫描线的颜色 默认白色
+                        config.setFullScreenScan(false);//是否全屏扫描  默认为true  设为false则只会在扫描框中扫描
+                        intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
+                        startActivityForResult(intent, REQUEST_CODE_SCAN);
+                    }
+                })
+                .onDenied(new Action() {
+                    @Override
+                    public void onAction(List<String> permissions) {
+                        Uri packageURI = Uri.parse("package:" + getPackageName());
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                        startActivity(intent);
+
+                        Toast.makeText(PigInfoActivity.this, "没有权限无法扫描呦", Toast.LENGTH_LONG).show();
+                    }
+                }).start();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // 扫描二维码/条码回传
+        if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
+            if (data != null) {
+
+                String content = data.getStringExtra(Constant.CODED_CONTENT);
+                //result.setText("扫描结果为：" + content);
+                Intent intent = new Intent(this,PigInfoActivity.class);
+                intent.putExtra("BigChainDB",content);
+                startActivity(intent);
+            }
         }
     }
 
@@ -198,7 +265,10 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
             startActivity(intent);
         }
         if(v.getId()==R.id.btn_scan){
-            Intent intent=new Intent(this,PigInfoActivity.class);
+            scan();
+        }
+        if(v.getId()==R.id.btn_orderlist){
+            Intent intent=new Intent(this,buyinfoActivity.class);
             startActivity(intent);
         }
         if(v.getId()==R.id.btn_commit){
@@ -216,20 +286,22 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
             if (status.equals("0")){
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
-                        .url(url + "preSale/" + ERCId + "/" + this.getResources().getText(R.string.sell_address))
+                        .url(url + "preSale/" + ERCId + "/" + this.getResources().getText(R.string.sell_address) + "/" + password)
                         .build();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
                            client.newCall(request).execute();
-                            //Log.i("result",response.body().string()+"");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                 }
                 }).start();
-                Toast.makeText(PigInfoActivity.this, "success", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PigInfoActivity.this, "交易正在进行中", Toast.LENGTH_SHORT).show();
+                sleep();
+                Log.i("result",request.body()+"");
+                Toast.makeText(PigInfoActivity.this, "出栏成功！", Toast.LENGTH_SHORT).show();
             }
 
 
@@ -244,7 +316,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
             else if(status.equals("1")){
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
-                        .url(url + "confirmBuy/" + this.getResources().getText(R.string.buy_address) + BigChainDB)
+                        .url(url + "confirmBuy/" + this.getResources().getText(R.string.buy_address) + "/" + ERCId + "/" + password)
                         .get()
                         .build();
                 new Thread(new Runnable() {
@@ -258,7 +330,8 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
                         }
                     }
                 }).start();
-                Toast.makeText(PigInfoActivity.this, "success", Toast.LENGTH_SHORT).show();
+                sleep();
+                Toast.makeText(PigInfoActivity.this, "订单提交成功！", Toast.LENGTH_SHORT).show();
             }
 
 
@@ -274,7 +347,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
             else if(status.equals("2")){
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
-                        .url(url + "transfer/" + this.getResources().getText(R.string.sell_address) +this.getResources().getText(R.string.buy_address) + BigChainDB)
+                        .url(url + "transfer/" + this.getResources().getText(R.string.sell_address) + "/"+ this.getResources().getText(R.string.buy_address) + "/"+ ERCId + "/" + password)
                         .get()
                         .build();
                 new Thread(new Runnable() {
@@ -288,7 +361,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
                         }
                     }
                 }).start();
-                Toast.makeText(PigInfoActivity.this, "success", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PigInfoActivity.this, "发货成功", Toast.LENGTH_SHORT).show();
             }
 
 
@@ -304,7 +377,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
             else if(status.equals("3")){
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
-                        .url(url + "changeStatus/" + this.getResources().getText(R.string.buy_address) +this.getResources().getText(R.string.sell_address) + BigChainDB)
+                        .url(url + "changeStatus/" + this.getResources().getText(R.string.buy_address) + "/" +this.getResources().getText(R.string.sell_address) + "/"+ ERCId+ "/" + password)
                         .get()
                         .build();
                 new Thread(new Runnable() {
@@ -318,7 +391,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
                         }
                     }
                 }).start();
-                Toast.makeText(PigInfoActivity.this, "success", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PigInfoActivity.this, "收货成功", Toast.LENGTH_SHORT).show();
             }
             AlertDialog mydialog2 = builder.create();
             mydialog2.show();
