@@ -199,7 +199,6 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
                         Uri packageURI = Uri.parse("package:" + getPackageName());
                         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
                         startActivity(intent);
 
                         Toast.makeText(InfoActivity.this, "没有权限无法扫描呦", Toast.LENGTH_LONG).show();

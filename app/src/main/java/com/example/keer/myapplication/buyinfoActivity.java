@@ -3,6 +3,7 @@ package com.example.keer.myapplication;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +15,12 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.rmondjone.locktableview.LockTableView;
 import com.rmondjone.xrecyclerview.ProgressStyle;
 import com.rmondjone.xrecyclerview.XRecyclerView;
@@ -24,22 +31,113 @@ import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
 import com.yzq.zxinglibrary.common.Constant;
 
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class buyinfoActivity extends AppCompatActivity implements View.OnClickListener {
     private int REQUEST_CODE_SCAN = 111;
-
     LinearLayout linearLayout;
     TableLayout tableLayout;
     Button button;
+
+    String ERCId;
+    String breed;
+    String earId;
+    String status;
+
+    String string;
+    ArrayList<ArrayList> data = new ArrayList<>();
+    //ArrayList<ArrayList<String>> data;
+    ArrayList<String> list = new ArrayList<>();
+    ArrayList<String> a = new ArrayList<>();
+
+    String addr = com.example.keer.myapplication.Constant.address;
+   // private Handler handler=null;
+    private Handler handler = new Handler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_addpig);
-        initXml();//代码动态创建布局
-        addView();//给创建的布局中添加控件
+
+//        Intent intent = getIntent();
+//        earId=intent.getStringExtra("earId");
+
+        /**
+         * 发送HTTP请求
+         * 查询当前账户下所有猪的信息
+         * */
+        //获取配置的URL
+        String url = this.getString(R.string.URL);
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(url + "getAllPig/" + "/" + addr)
+                .get()
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+
+            public Object onParseResponse(Call call, Response response) {
+                return null;
+            }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(buyinfoActivity.this, "error", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                string = response.body().string();
+                Log.i("info",string+"");
+                Map json = (Map) com.alibaba.fastjson.JSONObject.parse(string);
+                JSONArray jsonArray = JSON.parseArray(json.get("data").toString());
+                Log.i("jsonArray",jsonArray+""+jsonArray.getClass() + jsonArray.size());
+                for (int i = 0; i < jsonArray.size(); i++){
+                    //System.out.println(jsonArray.get(i));
+                    String jsonStr = JSONObject.toJSONString(jsonArray.get(i));
+                    Collections.addAll(list,jsonStr);
+                    Log.i("list",list.get(i)+ "  type：" +list.getClass() + "  size："+list.size() + "  value：" + list.get(0));
+
+                }
+
+                if(json.get("message").toString().equals("success")){
+                    new Thread(){
+                        public void run(){
+                            handler.post(runnableUi);
+                        }
+                    }.start();
+                }else{
+                    Toast.makeText(buyinfoActivity.this, "fail", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
+
+    // 构建Runnable对象，在runnable中更新界面
+    Runnable runnableUi=new  Runnable(){
+        @Override
+        public void run() {
+            //更新界面
+            initXml();//代码动态创建布局
+            addView();//给创建的布局中添加控件
+        }
+    };
+
     private void initXml(){
         linearLayout = new LinearLayout(this);//创建一个线性布局
         linearLayout.setBackgroundColor(Color.WHITE);//设置背景颜色
@@ -137,19 +235,47 @@ public class buyinfoActivity extends AppCompatActivity implements View.OnClickLi
     private ArrayList<ArrayList<String>> data(){
         ArrayList<ArrayList<String>> tabledata=new ArrayList<ArrayList<String>>();
         ArrayList<String> row1=new ArrayList<>();
-        row1.add("erc721");
+        row1.add("ERC721 ID");
+        row1.add("耳号");
         row1.add("品种");
-        row1.add("重量");
-        row1.add("状态");
-
+        row1.add("当前状态");
 
         tabledata.add(row1);
-        for(int i=0;i<20;i++){
-            ArrayList<String> row=new ArrayList<String>();
-            row.add(""+i);
-            row.add("大约克");
-            row.add("120");
-            row.add("良好");
+        for(int i = 0; i< list.size(); i++){
+            ArrayList row=new ArrayList();
+            String str = list.get(i);
+            str = str.substring(1,str.length()-1);
+            String[] data = str.split(",");
+            Log.i("data",data[i]+ "  type：" +data.getClass()+ "  value：" + data[i]);
+
+            String id = data[0];
+            id = id.substring(1, id.length()-1);
+            row.add(id);
+
+            String earId = data[1];
+            earId = earId.substring(1, earId.length()-1);
+            row.add(earId);
+
+            String breed = data[2];
+            breed = breed.substring(1, breed.length()-1);
+            row.add(breed);
+
+            String status = data[3];
+            status = status.substring(1, status.length()-1);
+            //状态判断
+            switch (status){
+                case "0"://饲养  button：出栏
+                    row.add("饲养中");break;
+                case "1"://代售  button：确认购买
+                    row.add("已出栏");break;
+                case "2"://确认购买 button：确认发货
+                    row.add("已发货");break;
+                case "3"://确认发货  button：确认收货
+                    row.add("已收货");break;
+                case "4"://确认收货  button：？？
+                    row.add("已售出");break;
+            }
+
             tabledata.add(row);
         }
         return  tabledata;
@@ -158,18 +284,13 @@ public class buyinfoActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
 
-//        if(v.getId()==R.id.btn_info){
-//            Intent intent=new Intent(this,InfoActivity.class);
-//            startActivity(intent);
-//        }
-
-        if(v.getId()==R.id.btn_orderlist){
-            Intent intent=new Intent(this,buyinfoActivity.class);
+        if(v.getId()==R.id.btn_info){
+            Intent intent=new Intent(this,InfoActivity.class);
             startActivity(intent);
         }
 
-        if(v.getId()==R.id.btn_logout){
-            Intent intent=new Intent(this,MainActivity.class);
+        if(v.getId()==R.id.btn_orderlist){
+            Intent intent=new Intent(this,buyinfoActivity.class);
             startActivity(intent);
         }
 

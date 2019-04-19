@@ -179,21 +179,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 }
                 }
             });
-
-//            else {
-//                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-//                builder.setTitle("登陆提示")
-//                        .setMessage("登陆失败！请重新登录！")
-//                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                Intent intent=new Intent(builder.getContext(),MainActivity.class);
-//                                startActivity(intent);
-//                            }
-//                        });
-//                AlertDialog login = builder.create();
-//                login.show();
-//            }
         }
     }
 

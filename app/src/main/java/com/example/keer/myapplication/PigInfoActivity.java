@@ -190,7 +190,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
 
     public void sleep(){
         try {
-            Thread.sleep(2000);
+            Thread.sleep(4000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -272,8 +272,6 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
             startActivity(intent);
         }
         if(v.getId()==R.id.btn_commit){
-            final AlertDialog.Builder builder = new AlertDialog.Builder(PigInfoActivity.this);
-
             /**
              * 根据当前状态发出不同的交易请求
              * 状态为0：出生
@@ -302,6 +300,11 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
                 sleep();
                 Log.i("result",request.body()+"");
                 Toast.makeText(PigInfoActivity.this, "出栏成功！", Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(this, buyinfoActivity.class);
+                intent.putExtra("earId", BigChainDB);
+                startActivity(intent);
+                finish();
             }
 
 
@@ -332,6 +335,11 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
                 }).start();
                 sleep();
                 Toast.makeText(PigInfoActivity.this, "订单提交成功！", Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(this, buyinfoActivity.class);
+                intent.putExtra("earId", BigChainDB);
+                startActivity(intent);
+                finish();
             }
 
 
@@ -361,7 +369,13 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
                         }
                     }
                 }).start();
-                Toast.makeText(PigInfoActivity.this, "发货成功", Toast.LENGTH_SHORT).show();
+                sleep();
+                Toast.makeText(PigInfoActivity.this, "发货成功！", Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(this, buyinfoActivity.class);
+                intent.putExtra("earId", BigChainDB);
+                startActivity(intent);
+                finish();
             }
 
 
@@ -391,10 +405,32 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
                         }
                     }
                 }).start();
-                Toast.makeText(PigInfoActivity.this, "收货成功", Toast.LENGTH_SHORT).show();
+                sleep();
+                Toast.makeText(PigInfoActivity.this, "收货成功！", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, buyinfoActivity.class);
+                intent.putExtra("earId", BigChainDB);
+                startActivity(intent);
+                finish();
             }
-            AlertDialog mydialog2 = builder.create();
-            mydialog2.show();
+
+            /**
+             * 根据当前状态发出不同的交易请求
+             * 状态为4：此猪已售出
+             */
+            else if(status.equals("4")){
+                final AlertDialog.Builder builder = new AlertDialog.Builder(PigInfoActivity.this);
+                builder.setTitle("提示")
+                        .setMessage("此🐖已售出！")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent=new Intent(builder.getContext(),buyinfoActivity.class);
+                                startActivity(intent);
+                            }
+                        });
+                AlertDialog login = builder.create();
+                login.show();
+            }
 
         }
     }
