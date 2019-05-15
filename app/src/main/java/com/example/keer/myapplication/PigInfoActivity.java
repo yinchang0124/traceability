@@ -336,7 +336,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
                 sleep();
                 Toast.makeText(PigInfoActivity.this, "订单提交成功！", Toast.LENGTH_SHORT).show();
 
-                Intent intent = new Intent(this, buyinfoActivity.class);
+                Intent intent = new Intent(this, InfoActivity.class);
                 intent.putExtra("earId", BigChainDB);
                 startActivity(intent);
                 finish();

@@ -272,10 +272,9 @@ public class buyinfoActivity extends AppCompatActivity implements View.OnClickLi
                     row.add("已发货");break;
                 case "3"://确认发货  button：确认收货
                     row.add("已收货");break;
-                case "4"://确认收货  button：？？
+                case "4"://确认收货  button：已售出
                     row.add("已售出");break;
             }
-
             tabledata.add(row);
         }
         return  tabledata;

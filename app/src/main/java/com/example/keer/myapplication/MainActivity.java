@@ -125,60 +125,69 @@ public class MainActivity extends Activity implements View.OnClickListener {
             acc = account.getEditableText().toString();
             password = (EditText) findViewById(R.id.input_password);
             pass = password.getEditableText().toString();
+
+            Intent intent = new Intent(MainActivity.this, InfoActivity.class);
+            intent.putExtra("address",addr);
+            Constant.address = addr;
+            Constant.mPassword =pass;
+            startActivity(intent);
+            finish();
+
             //获取配置的URL
-            String url = this.getString(R.string.URL);
-
-
-            /**
-            * 发送HTTP请求
-            * 用户登录
-            * */
-            HashMap<String,String> jsonmap=new HashMap<>();
-            jsonmap.put("account",acc);
-            jsonmap.put("password", pass);
-            jsonmap.put("address", addr);
-
-            Map map=new HashMap<>();
-            map.put("data",jsonmap);
-            Gson gson=new Gson();
-
-            OkHttpClient client = new OkHttpClient();
-            MediaType JSON = MediaType.parse("application/json; charset=utf-8");//数据类型为json格式，
-
-            RequestBody body = RequestBody.create(JSON, gson.toJson(map));
-            Request request = new Request.Builder()
-                    .url(url + "login")
-                    .post(body)
-                    .build();
-            client.newCall(request).enqueue(new Callback() {
-
-                public Object onParseResponse(Call call, Response response) {
-                    return null;
-                }
-
-                @Override
-                public void onFailure(Call call, IOException e) {
-                   // Toast.makeText(MainActivity.this, "http fail", Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    String string = response.body().string();
-                    Log.i("info",string+"");
-                    Map json = (Map) com.alibaba.fastjson.JSONObject.parse(string);
-
-                    if(json.get("message").toString().equals("success")){
-                    Intent intent = new Intent(MainActivity.this, InfoActivity.class);
-//                    intent.putExtra("address",addr);
-                        Constant.address = addr;
-                        Constant.mPassword =pass;
-                    startActivity(intent);
-                    finish();
-                }else{
-                    Toast.makeText(MainActivity.this, "account or password is  invalid", Toast.LENGTH_SHORT).show();
-                }
-                }
-            });
+//            String url = this.getString(R.string.URL);
+//
+//
+//            /**
+//            * 发送HTTP请求
+//            * 用户登录
+//            * */
+//            HashMap<String,String> jsonmap=new HashMap<>();
+//            jsonmap.put("account",acc);
+//            jsonmap.put("password", pass);
+//            jsonmap.put("address", addr);
+//
+//            Map map=new HashMap<>();
+//            map.put("data",jsonmap);
+//            Gson gson=new Gson();
+//
+//            OkHttpClient client = new OkHttpClient();
+//            MediaType JSON = MediaType.parse("application/json; charset=utf-8");//数据类型为json格式，
+//
+//            RequestBody body = RequestBody.create(JSON, gson.toJson(map));
+//            Request request = new Request.Builder()
+//                    .url(url + "login")
+//                    .get()
+//                    .build();
+//            Log.i("connect",url);
+//            client.newCall(request).enqueue(new Callback() {
+//
+//                public Object onParseResponse(Call call, Response response) {
+//                    return null;
+//                }
+//
+//                @Override
+//                public void onFailure(Call call, IOException e) {
+//                   // Toast.makeText(MainActivity.this, "http fail", Toast.LENGTH_SHORT).show();
+//                }
+//
+//                @Override
+//                public void onResponse(Call call, Response response) throws IOException {
+//                    String string = response.body().string();
+//                    Log.i("info",string+"");
+//                    Map json = (Map) com.alibaba.fastjson.JSONObject.parse(string);
+//
+//                    if(json.get("message").toString().equals("success")){
+//                    Intent intent = new Intent(MainActivity.this, InfoActivity.class);
+////                    intent.putExtra("address",addr);
+//                        Constant.address = addr;
+//                        Constant.mPassword =pass;
+//                    startActivity(intent);
+//                    finish();
+//                }else{
+//                    Toast.makeText(MainActivity.this, "account or password is  invalid", Toast.LENGTH_SHORT).show();
+//                }
+//                }
+//            });
         }
     }
 

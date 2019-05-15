@@ -18,10 +18,10 @@
 
         <TextView
             android:id="@+id/titleView"
-            android:layout_width="234dp"
+            android:layout_width="259dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="区块链交易系统"
+            android:text="数据权益管理系统"
             android:textColor="@color/front"
             android:textSize="30dp"
             android:typeface="sans" />

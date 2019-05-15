@@ -1,6 +1,6 @@
 <resources>
     <!--URL-->
-    <string name="URL">http://192.168.137.1:8080/</string>
+    <string name="URL">http://192.168.1.128:8080/</string>
 
     <string name="app_name"></string>
     <string name="menu_home">个人信息</string>
@@ -30,8 +30,8 @@
 
     <!--address for buy and sell-->
     <string name="info">信息</string>
-    <string name="buy_address">0xe9fed27334a770717d80b94254db444bffbabec8</string>
-    <string name="sell_address">0x5a17470ae96b910b54a5b715b718dfa792f8b9ae</string>
+    <string name="buy_address">0x3d113ffe47c2326ebb801146995bdf0856255fe7</string>
+    <string name="sell_address">0x7ee4ab57369405fd941b2151b93b04d78cfb63de</string>
     <string name="buy_key">123456</string>
     <string name="buy_account">123456</string>
     <string name="sell_key">654321</string>
