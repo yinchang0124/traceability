@@ -1,6 +1,6 @@
 <resources>
     <!--URL-->
-    <string name="URL">http://192.168.1.128:8080/</string>
+    <string name="URL">http://192.168.43.45:8080/</string>
 
     <string name="app_name"></string>
     <string name="menu_home">个人信息</string>
@@ -22,7 +22,7 @@
     <string name="pig_info">生猪详情</string>
     <string name="ERC721">ERC721 ID:</string>
     <string name="bigchainDB">BigChainDB ID:</string>
-    <string name="price">价格：10eth</string>
+    <string name="price">价格：1eth</string>
     <string name="breed">品种：</string>
     <string name="weight">体重：大约KG</string>
     <string name="status">状态：0</string>
@@ -30,8 +30,8 @@
 
     <!--address for buy and sell-->
     <string name="info">信息</string>
-    <string name="buy_address">0x3d113ffe47c2326ebb801146995bdf0856255fe7</string>
-    <string name="sell_address">0x7ee4ab57369405fd941b2151b93b04d78cfb63de</string>
+    <string name="buy_address">0x2a26ed976ea558580e6ca6610ab138b5a0bb8135</string>
+    <string name="sell_address">0x33517299f7e40d4f53d6e3345ab35a09d292e2bb</string>
     <string name="buy_key">123456</string>
     <string name="buy_account">123456</string>
     <string name="sell_key">654321</string>

@@ -27,16 +27,7 @@
         </activity>
         <activity android:name=".scanActivity" />
         <activity android:name=".PigInfoActivity" />
-        <activity android:name=".buyActivity" />
-        <activity android:name=".sellActivity" />
-        <activity android:name=".sellScanActivity" />
-        <activity android:name=".sellpiginfoActivity" />
         <activity android:name=".buyinfoActivity" />
-        <activity android:name=".receiptActivity" />
-        <activity
-            android:name=".sellshipmentActivity"
-            android:label="@string/title_activity_sellshipment"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".InfoActivity" />
         <activity
             android:name=".testActivity"

@@ -95,7 +95,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
         tx_bigchainDB.setText("耳号："+BigChainDB);
 
         tx_price=(TextView)findViewById(R.id.tv_price);
-        tx_price.setText("价格："+"10ETH");
+        tx_price.setText("价格："+"1ETH");
 
         tx_status=(TextView)findViewById(R.id.tv_status);
 
@@ -171,7 +171,7 @@ public class PigInfoActivity extends AppCompatActivity implements View.OnClickLi
                     tx_status.setText("当前状态：" + "饲养");
                     btn_commit.setText("出栏");break;
                 case "1"://代售  button：确认购买
-                    tx_status.setText("当前状态：" + "代售");
+                    tx_status.setText("当前状态：" + "待售");
                     btn_commit.setText("确认购买");break;
                 case "2"://确认购买 button：确认发货
                     tx_status.setText("当前状态：" + "已预定");

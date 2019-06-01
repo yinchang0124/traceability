@@ -267,13 +267,13 @@ public class buyinfoActivity extends AppCompatActivity implements View.OnClickLi
                 case "0"://饲养  button：出栏
                     row.add("饲养中");break;
                 case "1"://代售  button：确认购买
-                    row.add("已出栏");break;
+                    row.add("待售");break;
                 case "2"://确认购买 button：确认发货
-                    row.add("已发货");break;
+                    row.add("已预定");break;
                 case "3"://确认发货  button：确认收货
-                    row.add("已收货");break;
+                    row.add("已发货");break;
                 case "4"://确认收货  button：已售出
-                    row.add("已售出");break;
+                    row.add("已收货");break;
             }
             tabledata.add(row);
         }
