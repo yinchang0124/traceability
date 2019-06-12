@@ -45,6 +45,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * 用户账户下所有猪的详细信息
+ * 根据信息画出页面并显示
+ * */
 public class buyinfoActivity extends AppCompatActivity implements View.OnClickListener {
     private int REQUEST_CODE_SCAN = 111;
     LinearLayout linearLayout;
@@ -58,20 +62,15 @@ public class buyinfoActivity extends AppCompatActivity implements View.OnClickLi
 
     String string;
     ArrayList<ArrayList> data = new ArrayList<>();
-    //ArrayList<ArrayList<String>> data;
     ArrayList<String> list = new ArrayList<>();
     ArrayList<String> a = new ArrayList<>();
 
     String addr = com.example.keer.myapplication.Constant.address;
-   // private Handler handler=null;
     private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        Intent intent = getIntent();
-//        earId=intent.getStringExtra("earId");
 
         /**
          * 发送HTTP请求
@@ -107,7 +106,6 @@ public class buyinfoActivity extends AppCompatActivity implements View.OnClickLi
                 JSONArray jsonArray = JSON.parseArray(json.get("data").toString());
                 Log.i("jsonArray",jsonArray+""+jsonArray.getClass() + jsonArray.size());
                 for (int i = 0; i < jsonArray.size(); i++){
-                    //System.out.println(jsonArray.get(i));
                     String jsonStr = JSONObject.toJSONString(jsonArray.get(i));
                     Collections.addAll(list,jsonStr);
                     Log.i("list",list.get(i)+ "  type：" +list.getClass() + "  size："+list.size() + "  value：" + list.get(0));
@@ -138,6 +136,7 @@ public class buyinfoActivity extends AppCompatActivity implements View.OnClickLi
         }
     };
 
+    //代码动态创建布局
     private void initXml(){
         linearLayout = new LinearLayout(this);//创建一个线性布局
         linearLayout.setBackgroundColor(Color.WHITE);//设置背景颜色
@@ -146,6 +145,7 @@ public class buyinfoActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
+    //给创建的布局中添加控件
     private void addView(){
         final LockTableView mLockTableView = new LockTableView(this, linearLayout, data());
         Log.e("表格加载开始", "当前线程：" + Thread.currentThread());
@@ -232,6 +232,7 @@ public class buyinfoActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
+    //处理后台传过来的数据，并在页面加载出来
     private ArrayList<ArrayList<String>> data(){
         ArrayList<ArrayList<String>> tabledata=new ArrayList<ArrayList<String>>();
         ArrayList<String> row1=new ArrayList<>();

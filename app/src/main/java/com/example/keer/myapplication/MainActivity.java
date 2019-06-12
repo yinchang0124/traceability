@@ -48,7 +48,10 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-
+/**
+ * 登陆
+ * 对应的xml为activity_login
+ * */
 public class MainActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "Life_Activity";
     private EditText account;
@@ -65,7 +68,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
     String pass;
     String addr;
 
-
+    /**
+     * 一个activity启动调用的第一个函数就是onCreate
+     * 初始化页面
+     * 只有完成oncreate(Bundle) 方法后，页面中的控件才能通过findViewById方法获取到。
+     * */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +92,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
 
-
+    /**
+     * onClick设置按钮点击事件的响应
+     * 在资源目录 res 文件夹下的所有资源（文件以及信息）系统都会自动在 gen 目录中的 R.java 文件中生成一个对应且唯一的id。
+     * 我们可以通过这个唯一的id去查找当前对应的内容。
+     *R文件中对应的id指的是我们需要去找的那个控件的id，
+     * 控件id在我们编辑 xml 布局文件的时候给控件添加 android:id 属性添加，
+     * R文件中会自动生成与之对应的 id 值。所以我们访问的是 R.id 中控件 id 对应的系统自动生成的id值。
+     */
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.btn_open){
@@ -126,6 +140,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             password = (EditText) findViewById(R.id.input_password);
             pass = password.getEditableText().toString();
 
+            //点击登录按钮进行页面跳转，跳转到用户信息页面，并将地址和密码存储到Constant中，以便于剩下操作读取地址和密码
             Intent intent = new Intent(MainActivity.this, InfoActivity.class);
             intent.putExtra("address",addr);
             Constant.address = addr;

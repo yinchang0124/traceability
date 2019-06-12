@@ -14,7 +14,6 @@
 
     <!--MeActivity-->
     <string name="user_name">买家1</string>
-    <string name="chain_address">地址：0x1234abde354eef222</string>
     <string name="chain_value">70 eth</string>
     <string name="user_info">详细信息</string>
 
@@ -32,10 +31,6 @@
     <string name="info">信息</string>
     <string name="buy_address">0x2a26ed976ea558580e6ca6610ab138b5a0bb8135</string>
     <string name="sell_address">0x33517299f7e40d4f53d6e3345ab35a09d292e2bb</string>
-    <string name="buy_key">123456</string>
-    <string name="buy_account">123456</string>
-    <string name="sell_key">654321</string>
-    <string name="balance">100ETH</string>
 
     <!--address for contract-->
     <string name="contract">0x1234567655</string>

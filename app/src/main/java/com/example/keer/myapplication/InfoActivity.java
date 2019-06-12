@@ -33,7 +33,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
+/**
+ *用户个人信息页面
+ * 对应的xml为activity_info
+ * */
 public class InfoActivity extends AppCompatActivity implements View.OnClickListener{
 
     private Button btn_me;
@@ -49,6 +52,11 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
     String balanceOf;
     private Handler handler=null;
 
+    /**
+     * 一个activity启动调用的第一个函数就是onCreate
+     * 初始化页面
+     * 只有完成oncreate(Bundle) 方法后，页面中的控件才能通过findViewById方法获取到。
+     * */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,8 +81,6 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
         balance = (TextView)findViewById(R.id.txt_balance);
         title = (TextView)findViewById(R.id.txt_title);
 
-//        Intent intent=getIntent();
-//        addr = intent.getStringExtra("address");
         addr = com.example.keer.myapplication.Constant.address;
 
         if( addr.equals(address.getResources().getText(R.string.buy_address))){
@@ -119,8 +125,7 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
 
                 balanceOf = json.get("data").toString();
                 if(json.get("message").toString().equals("success")){
-                   // balance.setText("正在加载......");
-                    //balance.setText(balanceOf);
+                    //开启一个新的线程去加载用户余额
                     new Thread(){
                         public void run(){
                             handler.post(runnableUi);
@@ -167,6 +172,7 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    //扫描二维码和条形码
     public  void scan(){
         AndPermission.with(this)
                 .permission(Permission.CAMERA, Permission.READ_EXTERNAL_STORAGE)
@@ -206,6 +212,7 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
                 }).start();
     }
 
+    //得到扫描结果，并把得到的耳号存在intent中用来传值
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

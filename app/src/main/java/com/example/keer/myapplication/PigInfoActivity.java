@@ -40,6 +40,10 @@ import okhttp3.Response;
 
 import static rx.schedulers.Schedulers.start;
 
+/**
+ * 显示某只猪的详细信息和当前状态，并且可以通过点击按钮向后台发送请求触发交易
+ * 用户通过扫描二维码才能看到当前页面
+ */
 public class PigInfoActivity extends AppCompatActivity implements View.OnClickListener  {
     private Button btn_info;
     private Button btn_scan;
